@@ -21,12 +21,12 @@ func readQuery(m *dns.Msg) {
 
 func answerTXT(q dns.Question) ([]dns.RR, int, error) {
 	var ra []dns.RR
-	rcode := dns.RcodeNameError
+	rcode := dns.RcodeSuccess
 	subdomain := sanitizeDomainQuestion(q.Name)
 	atxt, err := DB.GetTXTForDomain(subdomain)
 	if err != nil {
 		log.WithFields(log.Fields{"error": err.Error()}).Debug("Error while trying to get record")
-		return ra, dns.RcodeNameError, err
+		return ra, dns.RcodeSuccess, err
 	}
 	for _, v := range atxt {
 		if len(v) > 0 {
@@ -54,7 +54,7 @@ func answer(q dns.Question) ([]dns.RR, int, error) {
 	if !ok {
 		r, ok = RR.Records[dns.TypeCNAME][domain]
 		if !ok {
-			rcode = dns.RcodeNameError
+			rcode = dns.RcodeSuccess
 		}
 			
 	}
